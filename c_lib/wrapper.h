@@ -1,0 +1,8 @@
+#include "./spooles/InpMtx.h"
+#include "./spooles/DenseMtx.h"
+#include "./spooles/Graph.h"
+#include "./spooles/misc.h"
+#include "./spooles/ETree.h"
+#include "./spooles/SymbFac.h"
+#include "./spooles/FrontMtx.h"
+#include "./spooles/ChvManager.h"

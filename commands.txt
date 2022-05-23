@@ -1,0 +1,3 @@
+bindgen ./c_lib/wrapper.h --ctypes-prefix libc -o ./src/spooles_binding.rs
+
+cargo run --release

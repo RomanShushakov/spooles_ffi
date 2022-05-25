@@ -1,7 +1,8 @@
+mod tests;
 mod spooles_binding;
 use crate::spooles_binding::
 {
-    SPOOLES_REAL, SPOOLES_SYMMETRIC, SPOOLES_HERMITIAN, SPOOLES_NONSYMMETRIC, INPMTX_BY_ROWS, INPMTX_BY_VECTORS, 
+    SPOOLES_REAL, SPOOLES_SYMMETRIC, SPOOLES_NONSYMMETRIC, INPMTX_BY_ROWS, INPMTX_BY_VECTORS, 
     INPMTX_BY_CHEVRONS, NO_LOCK, FRONTMTX_DENSE_FRONTS, SPOOLES_NO_PIVOTING, SPOOLES_PIVOTING, IV, IVL, FILE,
     InpMtx_new, InpMtx_init, InpMtx_inputRealEntry, InpMtx_changeStorageMode, DenseMtx_new, DenseMtx_init, 
     DenseMtx_setRealEntry, Graph_new, InpMtx_fullAdjacency, IVL_tsize, Graph_init2, orderViaMMD, ETree_oldToNewVtxPerm, 
@@ -16,7 +17,6 @@ use crate::spooles_binding::
 pub enum SymmetryFlag
 {
     Symmetric,
-    Hermitian,
     NonSymmetric,
 }
 
@@ -28,13 +28,13 @@ pub enum PivotingFlag
 }
 
 
-pub fn solve(n_row: i32, a: Vec<(i32, i32, f64)>, b: Vec<(i32, f64)>, symmetry_flag: SymmetryFlag, 
+/// Serial solution of AX = B using LU factorization.
+pub fn serial_solution_using_lu(n_row: i32, a: Vec<(i32, i32, f64)>, b: Vec<(i32, f64)>, symmetry_flag: SymmetryFlag, 
     pivoting_flag: PivotingFlag) -> Result<Vec<f64>, String>
 {
     let symmetry_flag = match symmetry_flag 
         {
             SymmetryFlag::Symmetric => SPOOLES_SYMMETRIC,
-            SymmetryFlag::Hermitian => SPOOLES_HERMITIAN,
             SymmetryFlag::NonSymmetric => SPOOLES_NONSYMMETRIC,
         };
 
@@ -76,9 +76,9 @@ pub fn solve(n_row: i32, a: Vec<(i32, i32, f64)>, b: Vec<(i32, f64)>, symmetry_f
     { 
         DenseMtx_init(mtx_y, m_type as i32, 0, 0, n_eqns, n_rhs, 1, n_eqns); 
     }
-    for (j_col, y_value) in b.iter()
+    for (i_row, y_value) in b.iter()
     {
-        unsafe { DenseMtx_setRealEntry(mtx_y, *j_col, 0, *y_value); }
+        unsafe { DenseMtx_setRealEntry(mtx_y, *i_row, 0, *y_value); }
     }
 
     let graph = unsafe { Graph_new() };
@@ -100,7 +100,7 @@ pub fn solve(n_row: i32, a: Vec<(i32, i32, f64)>, b: Vec<(i32, f64)>, symmetry_f
     {
         ETree_permuteVertices(front_e_tree, new_to_old_iv);
         InpMtx_permute(mtx_a, old_to_new, old_to_new);
-        if symmetry_flag == SPOOLES_SYMMETRIC || symmetry_flag == SPOOLES_HERMITIAN 
+        if symmetry_flag == SPOOLES_SYMMETRIC
         {
             InpMtx_mapToUpperTriangle(mtx_a);
         }

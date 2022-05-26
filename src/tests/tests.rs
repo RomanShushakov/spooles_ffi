@@ -1,8 +1,8 @@
-use crate::{SymmetryFlag, PivotingFlag, serial_solution_using_lu};
+use crate::{SymmetryFlag, PivotingFlag, solve_using_lu};
 
 
 #[test]
-fn test_serial_solution_using_lu_symm()
+fn test_solve_using_lu_symm()
 {
     let n_row = 4;
     let a_symm = vec![
@@ -27,7 +27,7 @@ fn test_serial_solution_using_lu_symm()
     let pivoting_flag = PivotingFlag::Pivoting;
     let expected = vec![1.6, 2.6, 2.4, 1.4];
 
-    let x = serial_solution_using_lu(n_row, a_symm, b, symmetry_flag, pivoting_flag).unwrap();
+    let x = solve_using_lu(n_row, a_symm, b, symmetry_flag, pivoting_flag).unwrap();
 
     for i in 0..expected.len()
     {
@@ -37,7 +37,7 @@ fn test_serial_solution_using_lu_symm()
 
 
 #[test]
-fn test_serial_solution_using_lu_nonsymm()
+fn test_solve_using_lu_nonsymm()
 {
     let n_row = 3;
     let a_symm = vec![
@@ -60,7 +60,7 @@ fn test_serial_solution_using_lu_nonsymm()
     let pivoting_flag = PivotingFlag::Pivoting;
     let expected = vec![3.0, -2.5, 7.0];
 
-    let x = serial_solution_using_lu(n_row, a_symm, b, symmetry_flag, pivoting_flag).unwrap();
+    let x = solve_using_lu(n_row, a_symm, b, symmetry_flag, pivoting_flag).unwrap();
 
     for i in 0..expected.len()
     {

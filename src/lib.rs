@@ -29,7 +29,7 @@ pub enum PivotingFlag
 
 
 /// Serial solution of AX = B using LU factorization.
-pub fn serial_solution_using_lu(n_row: i32, a: Vec<(i32, i32, f64)>, b: Vec<(i32, f64)>, symmetry_flag: SymmetryFlag, 
+pub fn solve_using_lu(n_row: i32, a: Vec<(i32, i32, f64)>, b: Vec<(i32, f64)>, symmetry_flag: SymmetryFlag, 
     pivoting_flag: PivotingFlag) -> Result<Vec<f64>, String>
 {
     let symmetry_flag = match symmetry_flag 
